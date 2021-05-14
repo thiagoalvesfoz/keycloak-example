@@ -1,0 +1,73 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@page {
+  margin: 8mm;
+}
+
+input:focus {
+  outline-color: #7abde0;
+}
+
+select {
+  padding: 0 12px;
+  background: url(http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png)
+    no-repeat right;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-size: 15px;
+  background-position-x: calc(100% - 12px);
+}
+
+select:focus {
+  outline-color: #7abde0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f6f7;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.container {
+  width: 1366px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+@media (max-width: 450px) {
+  .container {
+    padding: 20px;
+  }
+}
+
+.box-shadow {
+  box-shadow: -10px -10px 20px rgba(139, 142, 157, 0.145),
+    10px 10px 20px rgba(166, 171, 189, 0.43);
+}
+
+.radius {
+  border-radius: 5px;
+  border: 1px solid #dadada;
+}
+
+.primary {
+  color: #016294;
+}
+
+.bg-primary {
+  background-color: #016294;
+}

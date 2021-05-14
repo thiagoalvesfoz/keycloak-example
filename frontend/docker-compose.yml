@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  react-cis:
+    build: .
+    container_name: react-cis
+    tty: true
+    ports:
+      - "3000:3000"

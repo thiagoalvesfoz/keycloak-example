@@ -11,8 +11,6 @@ Vagrant.configure("2") do |config|
       vb.memory = "1024"
       vb.cpus = "1"
     end
-
-  config.vm.provision  "file", source: "./docker-compose.yml", destination: "docker-compose.yml"
   
   config.vm.provision "shell", inline: <<-SHELL
     
@@ -29,7 +27,7 @@ Vagrant.configure("2") do |config|
           $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     sudo apt-get update && sudo apt-get install docker-ce docker-ce-cli containerd.io -y
-    sudo adduser $USER docker
+
 
     # ##################################################################################################################
     # INSTALL DOCKER-COMPOSE - https://docs.docker.com/compose/install/
@@ -39,10 +37,12 @@ Vagrant.configure("2") do |config|
     sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
     
     # EXECUTE KEYCLOAK
-    sudo docker-compose up -d
+    usermod -aG docker vagrant
   
   SHELL
 
-  # config.vm.provision  "shell", path: "./keycloak.sh"
+  config.vm.provision  "file", source: "./docker-compose.yml", destination: "docker-compose.yml"
+  config.vm.provision "shell", inline: "sudo docker-compose up -d", run: "always"
+
   end
 end
