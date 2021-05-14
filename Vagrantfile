@@ -1,48 +1,28 @@
+require_relative 'cluster.rb'
+
+clusters = @clusters
+
 Vagrant.configure("2") do |config|
-
-  config.vm.define "keycloak" do |config| 
-    
-    config.vm.box = "generic/ubuntu1804"
-    config.vm.box_check_update = false
-    config.vm.network "private_network", ip: "192.168.10.50"
-
-    config.vm.provider :virtualbox do |vb|
-      vb.name = "keycloak-vm"
-      vb.memory = "1024"
-      vb.cpus = "1"
-    end
   
-  config.vm.provision "shell", inline: <<-SHELL
-    
-    sudo apt-get clean && sudo apt-get update
+  clusters.each do |hostname, info| 
 
-    # ##################################################################################################################
-    # INSTALL DOCKER - DOC: https://docs.docker.com/engine/install/ubuntu/
-    # ##################################################################################################################
-    sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release -y
+    config.vm.define hostname do |cfg|
 
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      cfg.vm.box = info[:box_image]
+      cfg.vm.box_check_update = false
+      cfg.vm.network "private_network", ip: info[:ip]
 
-    echo  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-          $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      cfg.vm.provider :virtualbox do |vb, override|
+        vb.name = hostname
+        vb.memory = info[:mem] if info[:mem]
+        vb.cpus = info[:cpus] if info[:cpus]
+      end 
 
-    sudo apt-get update && sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+      cfg.vm.provision :shell, path: info[:script] if info[:script]
+      cfg.vm.provision :file,  source: info[:folder], destination: "/home/vagrant/" if info[:folder]
+      cfg.vm.provision :shell, inline: info[:entrypoint], run: "always" if info[:entrypoint]
 
-
-    # ##################################################################################################################
-    # INSTALL DOCKER-COMPOSE - https://docs.docker.com/compose/install/
-    # ##################################################################################################################
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-    
-    # EXECUTE KEYCLOAK
-    usermod -aG docker vagrant
+    end #end config
+  end #end loop
   
-  SHELL
-
-  config.vm.provision  "file", source: "./docker-compose.yml", destination: "docker-compose.yml"
-  config.vm.provision "shell", inline: "sudo docker-compose up -d", run: "always"
-
-  end
-end
+end #end vagrant

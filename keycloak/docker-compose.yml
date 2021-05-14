@@ -20,6 +20,10 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
+    volumes:
+      - ./imports:/opt/jboss/keycloak/imports
+    command:
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
     restart: always
     environment:
       DB_VENDOR: MYSQL
