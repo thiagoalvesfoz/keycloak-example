@@ -4,6 +4,7 @@ services:
   react-cis:
     build: .
     container_name: react-cis
+    image: thiagoalvesfoz/react-cis:latest
     tty: true
     ports:
       - "3000:3000"
