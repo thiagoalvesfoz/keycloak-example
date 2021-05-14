@@ -6,7 +6,7 @@
     :mem => 1024,
     :script => "./keycloak.sh",
     :folder => "./keycloak",
-    :entrypoint => "cd app && docker-compose up -d"
+    :entrypoint => "cd keycloak && docker-compose up -d"
   },
   "frontend" => { 
     :box_image => "generic/ubuntu1804",
